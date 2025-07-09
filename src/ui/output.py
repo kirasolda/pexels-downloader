@@ -132,7 +132,7 @@ def images_from_pexels(
             f"Search query: {search_query}."
         )
 
-        url = g.PEXELS_API_URL
+        url = g.get_pexels_api_url()
         headers = {"Authorization": keys.pexels_api_key}
 
         params = {
@@ -144,9 +144,7 @@ def images_from_pexels(
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code != 200:
-            sly.logger.warn(
-                "Pexels API did not answered correctly. Skipping the page."
-            )
+            sly.logger.warn("Pexels API did not answered correctly. Skipping the page.")
             has_errors = True
             continue
 

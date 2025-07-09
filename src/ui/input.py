@@ -2,19 +2,16 @@ import requests
 
 import supervisely as sly
 
-from supervisely.app.widgets import (
-    Input,
-    Container,
-    Card,
-    Text,
-    Button,
-)
+from supervisely.app.widgets import Input, Container, Card, Text, Button, RadioGroup
 
 import src.ui.keys as keys
 import src.globals as g
 
 query_message = Text(status="error", text="Please, enter the search query.")
 query_message.hide()
+
+entity_types = [RadioGroup.Item(mode) for mode in g.PEXELS_API_ENDPOINTS]
+entity_type_selector = RadioGroup(entity_types)
 
 search_query_input = Input(minlength=1, placeholder="Enter the search query")
 
@@ -29,6 +26,7 @@ card = Card(
     description="Please, enter the search query to find images on Pexels.",
     content=Container(
         widgets=[
+            entity_type_selector,
             search_query_input,
             query_message,
             search_button,
@@ -39,6 +37,17 @@ card = Card(
     lock_message="Please, enter API key and check the connection to the Pexels API.",
 )
 card.lock()
+
+
+@entity_type_selector.value_changed
+def entity_type_changed(value: str):
+    """Changes the application mode based on the selected entity type.
+
+    :param value: The selected entity type, either "images" or "videos".
+    :type value: str
+    """
+    sly.logger.debug(f"Entity type changed to: {value}.")
+    g.app_mode = value
 
 
 @search_button.click
@@ -58,7 +67,7 @@ def get_number_of_results():
         params = {"query": search_query}
 
         # Making a request to the Pexels API.
-        response = requests.get(g.PEXELS_API_URL, headers=headers, params=params)
+        response = requests.get(g.get_pexels_api_url(), headers=headers, params=params)
         try:
             # Getting the number of requests left fot the API key.
             rate_remaining = int(response.headers["X-Ratelimit-Remaining"])

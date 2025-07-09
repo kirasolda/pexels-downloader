@@ -18,7 +18,28 @@ SLY_APP_DATA_DIR = sly.app.get_data_dir()
 IMAGES_TMP_DIR = "images"
 CUSTOM_DATA_KEY = "Pexels downloader"
 
-PEXELS_API_URL = "https://api.pexels.com/v1/search"
+
+PEXELS_API_URL = "https://api.pexels.com"
+PEXELS_API_ENDPOINTS = {
+    "images": "v1/search",
+    "videos": "videos/search",
+}
+app_mode = PEXELS_API_ENDPOINTS.keys()[0]  # Default to images mode
+
+
+def get_pexels_api_url() -> str:
+    """Returns the Pexels API URL based on the current mode (images or videos).
+
+    Returns:
+        str: Pexels API URL for images or videos.
+    """
+    endpoint = PEXELS_API_ENDPOINTS[app_mode]
+    if not endpoint:
+        raise ValueError(
+            f"Invalid app mode: {app_mode}. Available modes: {list(PEXELS_API_ENDPOINTS.keys())}"
+        )
+    return f"{PEXELS_API_URL}/{endpoint}"
+
 
 MIN_FILE_SIZE = 1 * 1024  # 1 KB
 
