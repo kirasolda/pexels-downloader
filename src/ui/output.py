@@ -156,7 +156,7 @@ def images_from_pexels(
             f"Total results: {response_data.get('total_results')}."
         )
 
-        images_on_page = response_data["photos"]
+        images_on_page = response_data.get(g.get_response_key(), [])
 
         sly.logger.debug(
             f"Pexels API returned {len(images_on_page)} images on page {page_number}. "
@@ -185,10 +185,15 @@ def images_from_pexels(
             )
             images_on_page = images_on_page[:end_offset_number]
 
+        size_idx = g.get_video_size_idx(image_size)
+
         # Iterate over the list of images on the current page.
         for image in images_on_page:
             # Extract the link to the original image.
-            link = image.get("src").get(image_size)
+            if g.app_mode == "images":
+                link = image.get("src").get(image_size)
+            elif g.app_mode == "videos":
+                link = g.get_video_link(image.get("video_files"), size_idx)
 
             # Checking if the link is correct.
             if not link:
@@ -206,7 +211,13 @@ def images_from_pexels(
             # Using Pexels photo ID as the image name.
             name = f"pexels_{image.get('id')}" + extension
 
-            if extension not in g.ALLOWED_IMAGE_FORMATS:
+            allowed_formats = (
+                g.ALLOWED_IMAGE_FORMATS
+                if g.app_mode == "images"
+                else g.ALLOWED_VIDEO_FORMATS
+            )
+
+            if extension not in allowed_formats:
                 sly.logger.debug(
                     f"The image with link {link} is skipped due to wrong extension."
                 )
@@ -422,6 +433,9 @@ def get_image_metadata(image: Dict[str, str], metadata: List[str]) -> Dict[str, 
 
         image_metadata[key] = image.get(field_name)
 
+    # Return key-value pairs if the value is None.
+    image_metadata = {k: v for k, v in image_metadata.items() if v is not None}
+
     return image_metadata
 
 
@@ -499,6 +513,13 @@ def pexels_to_supervisely():
     names, links, metas = images_from_pexels(
         search_query, images_number, metadata, start_number, image_size
     )
+
+    first_name = names[0]
+    first_link = links[0]
+    first_meta = metas[0]
+    print(f"First image name: {first_name}, link: {first_link}, metadata: {first_meta}")
+
+    raise Exception
 
     # Check if there are any images found for the query.
     if not (names and links):
