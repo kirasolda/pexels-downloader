@@ -11,6 +11,9 @@ load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 api = sly.Api.from_env()
 
+IMAGE_BATCH_SIZE = 500
+VIDEO_BATCH_SIZE = 5
+
 TEAM_ID = sly.io.env.team_id()
 WORKSPACE_ID = sly.io.env.workspace_id()
 

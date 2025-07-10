@@ -97,7 +97,7 @@ images_number_field = Field(
 )
 
 # Inputs for changing default settings.
-batch_size_input = InputNumber(value=500, min=1, precision=0)
+batch_size_input = InputNumber(value=g.IMAGE_BATCH_SIZE, min=1, precision=0)
 max_workers_input = InputNumber(value=os.cpu_count(), min=1, precision=0)
 batch_size_input.disable()
 max_workers_input.disable()

@@ -395,12 +395,12 @@ def upload_images_to_dataset(
     # Check if the user hasn't pressed the cancel button.
     if continue_downloading:
         if upload_method == "links":
-            uploaded_images = g.api.image.upload_links(
+            uploaded_images = get_entity_api().upload_links(
                 dataset_id, batch_names, batch_links, metas=batch_metas
             )
 
         elif upload_method == "files":
-            uploaded_images = g.api.image.upload_paths(
+            uploaded_images = get_entity_api().upload_paths(
                 dataset_id, batch_names, batch_links, metas=batch_metas
             )
 
@@ -409,6 +409,13 @@ def upload_images_to_dataset(
         )
 
         return len(uploaded_images)
+
+
+def get_entity_api():
+    if g.app_mode == "images":
+        return g.api.image
+    elif g.app_mode == "videos":
+        return g.api.video
 
 
 def get_image_metadata(image: Dict[str, str], metadata: List[str]) -> Dict[str, str]:
@@ -455,6 +462,7 @@ def pexels_to_supervisely():
 
     global batch_size
     batch_size = settings.batch_size_input.get_value()
+
     global max_workers
     max_workers = settings.max_workers_input.get_value()
 
@@ -532,9 +540,7 @@ def pexels_to_supervisely():
     progress.show()
     uploaded_images_number = 0
 
-    with progress(
-        message="Uploading images to the dataset...", total=len(names)
-    ) as pbar:
+    with progress(message="Uploading data to the dataset...", total=len(names)) as pbar:
         # Batch the lists of names, links and metadata.
         for batch_names, batch_links, batch_metas in zip(
             sly.batched(names, batch_size=batch_size),
@@ -669,10 +675,10 @@ def create_project(project_name: Optional[str]) -> int:
     # If the name is not specified, use the search query as the name.
     if not project_name:
         sly.logger.debug("Project name is not specified, using search query.")
-        project_name = f"Pexels images: {search_query}"
+        project_name = f"Pexels: {search_query}"
 
     project = g.api.project.create(
-        g.WORKSPACE_ID, project_name, change_name_if_conflict=True
+        g.WORKSPACE_ID, project_name, change_name_if_conflict=True, type=g.app_mode
     )
     return project.id
 

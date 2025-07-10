@@ -50,13 +50,19 @@ def entity_type_changed(value: str):
     g.app_mode = value
 
     from src.ui.output import destination_images, destination_videos
+    from src.ui.settings import batch_size_input
 
     if g.app_mode == "images":
         destination_images.show()
         destination_videos.hide()
+
+        batch_size_input.value = g.IMAGE_BATCH_SIZE
+
     elif g.app_mode == "videos":
         destination_images.hide()
         destination_videos.show()
+
+        batch_size_input.value = g.VIDEO_BATCH_SIZE
 
 
 @search_button.click
