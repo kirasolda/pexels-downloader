@@ -43,7 +43,9 @@ filtered_message.hide()
 duplicates_message = Text(status="warning")
 duplicates_message.hide()
 
-destination = DestinationProject(g.WORKSPACE_ID, project_type="images")
+destination_images = DestinationProject(g.WORKSPACE_ID, project_type="images")
+destination_videos = DestinationProject(g.WORKSPACE_ID, project_type="videos")
+destination_videos.hide()
 
 dataset_thumbnail = DatasetThumbnail(show_project_name=True)
 dataset_thumbnail.hide()
@@ -54,7 +56,8 @@ card = Card(
     "Select the destination for downloading images. If not filled the names will be generated automatically. ",
     content=Container(
         widgets=[
-            destination,
+            destination_images,
+            destination_videos,
             progress,
             buttons,
             result_message,
@@ -470,9 +473,9 @@ def pexels_to_supervisely():
     # Read the project and dataset ids from the destination input.
     # Define the global variables to use them in show_result_message().
     global project_id
-    project_id = destination.get_selected_project_id()
+    project_id = get_project_widget().get_selected_project_id()
     global dataset_id
-    dataset_id = destination.get_selected_dataset_id()
+    dataset_id = get_project_widget().get_selected_dataset_id()
 
     # Define the global variable to check if the download should continue.
     global continue_downloading
@@ -514,13 +517,6 @@ def pexels_to_supervisely():
         search_query, images_number, metadata, start_number, image_size
     )
 
-    first_name = names[0]
-    first_link = links[0]
-    first_meta = metas[0]
-    print(f"First image name: {first_name}, link: {first_link}, metadata: {first_meta}")
-
-    raise Exception
-
     # Check if there are any images found for the query.
     if not (names and links):
         # If there are no images, show the error message.
@@ -529,9 +525,9 @@ def pexels_to_supervisely():
 
     # Create the project and dataset if they don't exist.
     if not project_id:
-        project_id = create_project(destination.get_project_name())
+        project_id = create_project(get_project_widget().get_project_name())
     if not dataset_id:
-        dataset_id = create_dataset(project_id, destination.get_dataset_name())
+        dataset_id = create_dataset(project_id, get_project_widget().get_dataset_name())
 
     progress.show()
     uploaded_images_number = 0
@@ -712,3 +708,10 @@ def cancel_downloading():
     continue_downloading = False
     download_button.text = "Stopping..."
     cancel_button.hide()
+
+
+def get_project_widget() -> DestinationProject:
+    if g.app_mode == "images":
+        return destination_images
+    elif g.app_mode == "videos":
+        return destination_videos

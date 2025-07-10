@@ -49,6 +49,15 @@ def entity_type_changed(value: str):
     sly.logger.debug(f"Entity type changed to: {value}.")
     g.app_mode = value
 
+    from src.ui.output import destination_images, destination_videos
+
+    if g.app_mode == "images":
+        destination_images.show()
+        destination_videos.hide()
+    elif g.app_mode == "videos":
+        destination_images.hide()
+        destination_videos.show()
+
 
 @search_button.click
 def get_number_of_results():
