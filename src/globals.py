@@ -104,7 +104,7 @@ REQUIRED_METADATA_FIELDS = {
 OPTIONAL_METADATA_FIELDS = {
     "Photographer Pexels ID": "photographer_id",
     "Photographer URL": "photographer_url",
-    "Image description": "alt",
+    "Description": "alt",
 }
 # Download types for images.
 DOWNLOAD_TYPES = {

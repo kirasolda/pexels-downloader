@@ -252,8 +252,8 @@ def images_from_pexels(
     if has_errors:
         sly.app.show_dialog(
             "Pexels API not respoding",
-            "There was an error, while calling Pexels API. Total number of images can "
-            "be less than specified or it may be no images at all. Please, check data and try again later.",
+            "There was an error, while calling Pexels API. Total number of files can "
+            "be less than specified or it may be no files at all. Please, check data and try again later.",
             status="warning",
         )
     results_number = (
@@ -452,7 +452,7 @@ def get_image_metadata(image: Dict[str, str], metadata: List[str]) -> Dict[str, 
 @download_button.click
 def pexels_to_supervisely():
     download_button.disable()
-    """Reads the data from the input fields and starts downloading images from Pexels."""
+    """Reads the data from the input fields and starts downloading files from Pexels."""
     # Hiding all info messages after the download button was pressed.
     input.query_message.hide()
     result_message.hide()
@@ -621,30 +621,28 @@ def show_result_message(uploaded_images_number: Optional[int] = 0, error: bool =
         result_message.status = "error"
     elif continue_downloading:
         # If the upload was not cancelled, prepare the success message.
-        result_message.text = f"Successfully uploaded {uploaded_images_number} images."
+        result_message.text = f"Successfully uploaded {uploaded_images_number} files."
         result_message.status = "success"
         dataset_thumbnail.show()
     elif uploaded_images_number:
         # If the upload was cancelled, prepare the warning message.
         result_message.text = (
-            f"Download was cancelled after uploading {uploaded_images_number} images."
+            f"Download was cancelled after uploading {uploaded_images_number} files."
         )
         result_message.status = "warning"
         dataset_thumbnail.show()
     else:
         # If the upload was cancelled and no images were uploaded, prepare the error message.
-        result_message.text = "Download was cancelled. No images were uploaded."
+        result_message.text = "Download was cancelled. No files were uploaded."
         result_message.status = "error"
     if filtered_images:
         # Show the message with the number of filtered images if there were any.
-        filtered_message.text = (
-            f"Images filtered out as bad results: {filtered_images}."
-        )
+        filtered_message.text = f"Files filtered out as bad results: {filtered_images}."
         filtered_message.show()
     if existed_duplicates:
         # Show the message with the number of existed duplicates in the dataset if there were any.
         duplicates_message.text = (
-            f"Images filtered out as duplicates in the dataset: {existed_duplicates}."
+            f"Files filtered out as duplicates in the dataset: {existed_duplicates}."
         )
         duplicates_message.show()
 
