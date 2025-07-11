@@ -6,8 +6,9 @@ import supervisely as sly
 
 from dotenv import load_dotenv
 
-load_dotenv("local.env")
-load_dotenv(os.path.expanduser("~/supervisely.env"))
+if sly.is_development():
+    load_dotenv("local.env")
+    load_dotenv(os.path.expanduser("~/supervisely.env"))
 
 api = sly.Api.from_env()
 
@@ -134,5 +135,5 @@ def key_from_file() -> Optional[str]:
         return PEXELS_API_KEY
     except Exception as error:
         sly.logger.debug(
-            f"Pexel API key was not loaded from the team files with error: {error}.)"
+            f"Pexel API key was not loaded from the team files with error: {error}."
         )
