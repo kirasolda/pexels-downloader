@@ -15,7 +15,9 @@ entity_type_selector = RadioGroup(entity_types)
 
 search_query_input = Input(minlength=1, placeholder="Enter the search query")
 
+
 search_button = Button("Check number of images")
+
 
 search_results = Text(status="info")
 search_results.hide()
@@ -23,7 +25,7 @@ search_results.hide()
 # Main card for all input widgets.
 card = Card(
     title="2️⃣ Search query",
-    description="Please, enter the search query to find images on Pexels.",
+    description="Please, enter the search query to find media files on Pexels.",
     content=Container(
         widgets=[
             entity_type_selector,
@@ -55,12 +57,14 @@ def entity_type_changed(value: str):
     if g.app_mode == "images":
         destination_images.show()
         destination_videos.hide()
+        search_button.text = "Check number of images"
 
         batch_size_input.value = g.IMAGE_BATCH_SIZE
 
     elif g.app_mode == "videos":
         destination_images.hide()
         destination_videos.show()
+        search_button.text = "Check number of videos"
 
         batch_size_input.value = g.VIDEO_BATCH_SIZE
 

@@ -36,10 +36,10 @@ progress.hide()
 # Message for showing upload results.
 result_message = Text()
 result_message.hide()
-# Message for showing number of outfiltered images.
+# Message for showing number of outfiltered files.
 filtered_message = Text(status="info")
 filtered_message.hide()
-# Message for showing number of duplicate images in dataset that were skipped.
+# Message for showing number of duplicate files in dataset that were skipped.
 duplicates_message = Text(status="warning")
 duplicates_message.hide()
 
@@ -53,7 +53,7 @@ dataset_thumbnail.hide()
 # Main card for all output widgets.
 card = Card(
     "4️⃣ Destination",
-    "Select the destination for downloading images. If not filled the names will be generated automatically. ",
+    "Select the destination for downloading files. If not filled the names will be generated automatically. ",
     content=Container(
         widgets=[
             destination_images,
@@ -79,18 +79,18 @@ def images_from_pexels(
     start_number: int,
     image_size: str,
 ) -> Tuple[List[str], List[str], List[Dict[str, str]]]:
-    """Searches for specified number of images on Pexels using the specified search query
-    and returns the list of image names, links and metadata with specified fields.
+    """Searches for specified number of files on Pexels using the specified search query
+    and returns the list of files names, links and metadata with specified fields.
 
     Args:
-        search_query (str): search query for images
-        images_number (int): number of images to search
-        metadata (List[str]): list of metadata fields to add for images
-        start_number (int): number of images to skip from the beginning of the search
-        image_size (str): size of images to download
+        search_query (str): search query for files
+        images_number (int): number of files to search
+        metadata (List[str]): list of metadata fields to add for files
+        start_number (int): number of files to skip from the beginning of the search
+        image_size (str): size of files to download
 
     Returns:
-        tuple[List[str], List[str], List[Dict[str, str]]]: returns the list of image names,
+        tuple[List[str], List[str], List[Dict[str, str]]]: returns the list of files names,
         links and metadata for using in the upload_links() function
     """
     # Calculate the number of start and end pages and it's offsets.
@@ -105,11 +105,11 @@ def images_from_pexels(
     ) % g.IMAGES_PER_PAGE
 
     sly.logger.debug(
-        f"Total images number (with offset): {total_images_number}. "
+        f"Total files number (with offset): {total_images_number}. "
         f"Start page: {start_page_number}, start offset: {start_offset_number}. "
         f"End page: {end_page_number}, end offset: {end_offset_number}."
     )
-    # Check if adding images to an existing dataset.
+    # Check if adding files to an existing dataset.
     global dataset_id
     if dataset_id:
         # Read the list of existing file names to check for duplicates in search results.
